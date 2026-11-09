@@ -35,6 +35,11 @@ const getAllProducts = (req, res) => {
 // 2. Get product by ID
 const getProductById = (req, res) => {
   const id = parseInt(req.params.id);
+  if (isNaN(id) || id <= 0) {
+    return res.status(400).json({
+      message: "Invalid product ID",
+    });
+  }
 
   const product = products.find((p) => p.id === id);
 
@@ -69,6 +74,11 @@ const updateProduct = (req, res) => {
     return;
   }
   const id = parseInt(req.params.id);
+  if (isNaN(id) || id <= 0) {
+    return res.status(400).json({
+      message: "Invalid product ID",
+    });
+  }
 
   const product = products.find((p) => p.id === id);
 
@@ -89,6 +99,11 @@ const updateProduct = (req, res) => {
 // 5. Delete a product
 const deleteProduct = (req, res) => {
   const id = parseInt(req.params.id);
+  if (isNaN(id) || id <= 0) {
+    return res.status(400).json({
+      message: "Invalid product ID",
+    });
+  }
 
   const index = products.findIndex((p) => p.id === id);
 
