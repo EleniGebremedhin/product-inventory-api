@@ -1,4 +1,31 @@
 const products = require("../data/products");
+// Validate product data
+const validateProduct = (req, res) => {
+  const { name, price, quantity, category } = req.body;
+
+  if (
+    !req.body ||
+    Object.keys(req.body).length === 0 ||
+    typeof name !== "string" ||
+    name.trim() === "" ||
+    typeof price !== "number" ||
+    !Number.isFinite(price) ||
+    price <= 0 ||
+    typeof quantity !== "number" ||
+    !Number.isFinite(quantity) ||
+    quantity < 0 ||
+    typeof category !== "string" ||
+    category.trim() === ""
+  ) {
+    res.status(400).json({
+      message: "Validation failed",
+    });
+
+    return false;
+  }
+
+  return true;
+};
 
 // 1. Get all products
 const getAllProducts = (req, res) => {
@@ -21,6 +48,9 @@ const getProductById = (req, res) => {
 };
 // 3. Create a new product
 const createProduct = (req, res) => {
+  if (!validateProduct(req, res)) {
+    return;
+  }
   const newProduct = {
     id: products.length > 0 ? Math.max(...products.map((p) => p.id)) + 1 : 1,
     name: req.body.name,
@@ -35,6 +65,9 @@ const createProduct = (req, res) => {
 };
 // 4. Update a product
 const updateProduct = (req, res) => {
+  if (!validateProduct(req, res)) {
+    return;
+  }
   const id = parseInt(req.params.id);
 
   const product = products.find((p) => p.id === id);
