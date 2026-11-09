@@ -104,10 +104,70 @@ const deleteProduct = (req, res) => {
     message: "Product deleted successfully",
   });
 };
+// 6. Search products by name
+const searchProductsByName = (req, res) => {
+  const searchName = req.query.name;
+
+  if (!searchName || searchName.trim() === "") {
+    return res.status(400).json({
+      message: "Search name is required",
+    });
+  }
+
+  const results = products.filter((p) =>
+    p.name.toLowerCase().includes(searchName.toLowerCase()),
+  );
+
+  res.status(200).json(results);
+};
+// 7. Get products by category
+const getProductsByCategory = (req, res) => {
+  const category = req.params.category;
+
+  const results = products.filter(
+    (p) => p.category.toLowerCase() === category.toLowerCase(),
+  );
+
+  res.status(200).json(results);
+};
+// 8. Get products below a price
+const getProductsByPrice = (req, res) => {
+  const maxPrice = Number(req.params.price);
+
+  if (isNaN(maxPrice) || maxPrice <= 0) {
+    return res.status(400).json({
+      message: "Invalid price",
+    });
+  }
+
+  const results = products.filter((p) => p.price < maxPrice);
+
+  res.status(200).json(results);
+};
+const getLowStockProducts = (req, res) => {
+  const results = products.filter((p) => p.quantity < 5);
+
+  res.status(200).json(results);
+};
+// 10. Calculate total inventory value
+const getTotalInventoryValue = (req, res) => {
+  const totalValue = products.reduce((total, product) => {
+    return total + product.price * product.quantity;
+  }, 0);
+
+  res.status(200).json({
+    totalInventoryValue: totalValue,
+  });
+};
 module.exports = {
   getAllProducts,
   getProductById,
   createProduct,
   updateProduct,
   deleteProduct,
+  searchProductsByName,
+  getProductsByCategory,
+  getProductsByPrice,
+  getLowStockProducts,
+  getTotalInventoryValue,
 };
